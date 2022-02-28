@@ -65,7 +65,7 @@ exports.getProduct = async (req, res) => {
     let products = await product.create({
       ...data,
       image: req.file.filename,
-      userOrder: `${req.user.id}`,
+      idUser: `${req.user.id}`,
       include: {
         model: user,
         as: "user",

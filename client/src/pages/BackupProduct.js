@@ -20,7 +20,7 @@ import swal from '@sweetalert/with-react';
 
 
 export default function DetailProduct2() {
-  const [add, setAdd] = useState(false)
+  const [add, setAdd] = useState()
   let navigate = useNavigate()
 
 
@@ -47,24 +47,29 @@ export default function DetailProduct2() {
       try {
         const response = await API.get('/topings');
         setTopings(response.data.data);
+        // return console.log(response.data.data);
       } catch (error) {
         console.log(error);
       }
     };
-
-
-    const getToping = async () => {
+    const getToping = async (id) => {
       try {
         const response = await API.get(`/toping/${id}`);
-        // setToping(response);
-        console.log(response);
+        setToping(response.data.data)
+        // return console.log(response.data.data);
       } catch (error) {
         console.log(error);
       }
-      setAdd(true)
+      setAdd(!add)
     };
 
-    console.log(product);
+
+    // console.log(topings);
+
+    const cancel = () =>{
+      navigate('/page-user')
+    }
+
     const handleBuy = async (e) => {
       e.preventDefault();
 
@@ -72,7 +77,6 @@ export default function DetailProduct2() {
       idProduct: product.id,
       idToping: id,
       }
-      console.log(body);
       const data = JSON.stringify(body);
 
       const config = {
@@ -83,14 +87,14 @@ export default function DetailProduct2() {
         },
         data,
       };
-      await API.post("/transaction", body, config);
+      await API.post("/order", body, config);
       swal({
         title: "Good job!",
         text: "You clicked the button!",
         icon: "success",
         button: "Aww yiss!",
       });
-      setCount(count + 1)
+      navigate('/page-user')
   };
 
   useEffect(()=>{
@@ -117,23 +121,36 @@ export default function DetailProduct2() {
                 </div>
               <div className={style.Toping}>
                 {
-                  topings?.map(topings=>
-                    <Link to={`/product/` + topings.id} style={{ textDecoration: "none" }} key={topings.id}>
+                  topings && topings.map((item, index)=>
+                  (<Link to={`/product/` + item.id} style={{ textDecoration: "none" }} key={topings.id}>
+                  <div className={styleDetail2.TopingMAIN}>
+                    <input type="checkbox" id='toping1' onClick={()=>getToping(item.id)}/>
+                    <div className={styleDetail2.variant1}>
+                      <img className={styleDetail2.imgToping} for='toping1' src={item.image} alt="" onClick={()=>getToping(item.id)} />
+                    </div>
+                        <p style={{color: "rgb(236, 58, 58)", marginTop: "-35px", marginLeft: "10px"}}>{item.price}</p>
+                    <p style={{fontWeight: "bold", color : "rgb(236, 58, 58)", marginTop: "-20px", marginLeft: "5px"}}>{item.name}</p>
+                </div>
+                </Link>))}
+                {/* {
+                  toping && toping.map((item, index)=>
+                    (<Link to={`/product/` + item.id} style={{ textDecoration: "none" }} key={item.id}>
                   <div className={styleDetail2.TopingMAIN}>
                     <div className={styleDetail2.variant1}>
-                      {add && (<img src={Choose} className={styleDetail2.choose}/>)}
-                      <img className={styleDetail2.imgToping} src={topings.image} alt="" onClick={()=>getToping(toping.id)} />
+                      {add && <img src={Choose} className={styleDetail2.choose} />}
+                      <img className={styleDetail2.imgToping} src={item.image} alt="" onClick={()=>getToping(item.id)} />
                     </div>
-                        <p style={{color: "rgb(236, 58, 58)", marginTop: "-35px", marginLeft: "10px"}}>{topings.price}</p>
-                    <p style={{fontWeight: "bold", color : "rgb(236, 58, 58)", marginTop: "-20px", marginLeft: "5px"}}>{topings.name}</p>
+                        <p style={{color: "rgb(236, 58, 58)", marginTop: "-35px", marginLeft: "10px"}}>{item.price}</p>
+                    <p style={{fontWeight: "bold", color : "rgb(236, 58, 58)", marginTop: "-20px", marginLeft: "5px"}}>{item.name}</p>
                 </div>
-                </Link>)}
+                </Link>))} */}
               </div>
               <div className={style.down}>
                 <p className={style.thisTitleTotal}>Total</p>
-                <p style={{fontSize: "20px", color: "rgba(151, 74, 74, 1)"}}>0</p>
+                <p style={{fontSize: "20px", color: "rgba(151, 74, 74, 1)"}}>{add ? product.price + toping.price : product.price}</p>
                 <button className={style.btn} onClick={handleBuy}>Add Cart</button>
               </div>
+                <button className={style.btn} onClick={cancel}>Cancel</button>
               </div>
           </div>
         </div>

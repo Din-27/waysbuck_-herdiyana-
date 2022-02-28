@@ -47,9 +47,9 @@ export default function LoginModal (props) {
             });
     
             if (response.data.data.user.role == "admin") {
-              history("/PageAdmin");
+              history("/page-admin");
             } if (response.data.data.user.role == "customer"){
-              history("/PageLogin");
+              history("/page-user");
             }
             swal("Login Success!", "You clicked the button!", "success"); 
           }
@@ -59,7 +59,7 @@ export default function LoginModal (props) {
     }
 
     const handleRegister = () => {
-        history("/Register")
+        history("/register")
     }
 
 

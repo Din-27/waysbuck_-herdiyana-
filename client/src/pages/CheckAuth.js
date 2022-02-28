@@ -8,9 +8,9 @@ const [state, dispatch] = useContext(UserContext)
     if (state.isLogin === false) {
       <LoginModal/>
     } else {
-      if (state.user.status === "admin") {
+      if (state.user.role === "admin") {
         <PageAdmin/>
-      } else if (state.user.status === "customer") {
+      } else if (state.user.role === "customer") {
         <PageLogin/>
       }
     }

@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
           name: "idToping",
         },
       });
+      toping.hasMany(models.transaction, {
+        as: "transaction",
+        foreignKey: {
+          name: "idToping",
+        },
+      });
       
     }
   }

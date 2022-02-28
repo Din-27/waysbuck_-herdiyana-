@@ -2,11 +2,7 @@ const {user, product, toping, order } = require('../../models')
 
 exports.getOrders = async (req, res) => {
       try {
-          const id = `${req.user.id}`
           let transactions = await order.findAll({
-            // where: {
-            //   id
-            // },
             attributes:{
               exclude:["updatedAt", "idBuyer", "idSeller", "idProduct"]
             },
@@ -124,6 +120,74 @@ exports.deleteOrder = async (req, res) => {
       await order.destroy({
           where:{
               id
+          },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        }
+      })
+      res.send({
+          status: 'success',
+          data: {
+            id:id
+          }
+      })
+  }catch (error) {
+          console.log(error)
+          res.send({
+              status: 'failed',
+              message: 'Server Error'
+          })
+  }
+}
+
+exports.getOrder = async (req, res) => {
+  try {   const {id} = req.params;
+          const data = await order.findOne({
+          where: {
+              id
+          },
+          include: [
+            {
+              model: product,
+              as: "product",
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              }
+            },
+            {
+              model: toping,
+              as: "toping",
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              }
+            },
+        ],
+        attributes: {
+          exclude: ["createdAt", "updatedAt",]
+        }
+      })
+      res.send({
+          status: 'success',
+          data: {
+              data
+          }
+      })
+  } catch (error) {
+      console.log(error)
+      res.send({
+          status: 'failed',
+          message: 'Server Error'
+      })
+  }
+}
+
+exports.deleteOrderUser = async (req, res) => {
+  try{
+
+      const {id} = req.params
+      await order.destroy({
+          where:{
+              idUser: req.user.id
           },
         attributes: {
           exclude: ["createdAt", "updatedAt"]

@@ -83,16 +83,17 @@
 
 .contentOrder{
     display: flex;
-    flex-wrap: wrap;
-    margin-left: 65px;
+    /* flex-wrap: wrap; */
+    margin-left: 15px;
 }
 
 .order1{
-    background-color: rgb(187, 138, 138);
-    color: rgba(189, 7, 7, 1);
+    background-color: rgb(255, 58, 58);
+    color: rgb(255, 255, 255);
     border-radius: 15px;
-    padding: 5px;
-    border: 1px solid black;
+    padding: 10px;
+    /* border: 1px solid black; */
+    margin-left: 20px;
 }
 .descriptOrder1{
     margin-left: 10px;

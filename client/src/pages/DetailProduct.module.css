@@ -80,16 +80,22 @@
 
 .Toping{
     display: flex;
+    flex-wrap: wrap;
 }
 
 .RightMain{
+    width: 500px;
     margin-left: 150px;
     margin-top: -40px;
+}
 
+.TopingMAIN{
+    margin-left: 20px;
+    text-align: center;
 }
 
 .imgToping{
     width: 50px;
-    margin-right: 20px;
+    /* margin-right: 50px; */
     margin-bottom: 25px;
 }

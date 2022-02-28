@@ -1,21 +1,58 @@
 import React from 'react'
 import './admin.css'
-import vector5 from "../assets/Vector5.png"
-import vector4 from "../assets/Vector4.png"
-import iconLogout from '../assets/iconLogout.png'
-import Profile from '../assets//Rectangle 12.png'
-import Header from '../assets/Header.png'
 import {useState} from 'react'
-import {useNavigate} from 'react-router-dom'
 import NavbarAdmin from '../navbar/NavbarAdmin'
+import { API } from '../config/api'
+import { useEffect } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import swal from 'sweetalert'
+
+
 
 function Admin() {
-    const [down, setDown] = useState()
+
+    const {id} = useParams()
+    const [buyer, setBuyer] = useState([])
     const navigate = useNavigate()
 
-    const Logout = () => {
-        navigate("/")
+
+    console.log(buyer);
+    const getBuyer = async () =>{
+        try {
+            const response = await API.get('/transactions')
+            setBuyer(response.data.data.transactions)
+            // setBuyerBody(response.data.data.transactions[0])
+            // console.log(response.data.data);
+        } catch (error) {
+            console.log(error);
+        }
     }
+
+    const handleActionSuccess = async () =>{
+         const response = API.patch(`/transaction/${id}`)       
+        // console.log(response);
+        swal("Success!", "You clicked the button!", "success");
+        navigate('/admin')  
+    }
+
+    const handleActionCancel = async () =>{
+        const response = API.patch(`/transaction-cancel/${id}`)            
+        // console.log(response);
+        swal("Success Cancel Action!", "You clicked the button!", "success");
+        navigate('/admin')
+    }
+
+    const handleActionOTW = async () =>{
+        const response = API.patch(`/transaction-otw/${id}`)            
+        // console.log(response);
+        swal("Success OTW Action!", "You clicked the button!", "success");
+        navigate('/admin')
+    }
+
+    
+    useEffect(()=>{
+        getBuyer()
+    }, [])
 
     return (
         <div>
@@ -24,7 +61,7 @@ function Admin() {
                 <h2>income Transactions</h2>
                 <div className="table-main">
                     <table>
-                        <thead>
+                        <thead style={{textAlign: "center"}}>
                             <tr>
                                 <th>No</th>
                                 <th>Name</th>
@@ -36,22 +73,24 @@ function Admin() {
                             </tr>
                         </thead>
                         <tbody>
+                        { buyer && buyer.map((item, index)=>(
                             <tr>
-                                <td>1</td>
-                                <td>Sugeng No Pants</td>
-                                <td>Cileungsi</td>
-                                <td>16820</td>
+                                <td>{index + 1}</td>
+                                <td>{item.name}</td>
+                                <td>{item.address}</td>
+                                <td>{item.postcode}</td>
                                 <td>
                                     <p
                                         style={{
                                             textDecoration: "none"
-                                        }}>69.000</p>
+                                        }}>{item.order.product.price + item.order.toping.price}</p>
                                 </td>
                                 <td
-                                    style={{
-                                        color: "rgba(255, 153, 0, 1)"
-                                    }}>Waiting Approve</td>
+                                style={{
+                                    color: "rgba(255, 153, 0, 1)"
+                                }}>{item.status}</td>
                                 <td>
+                                <Link to={`/Admin/` + item.id} style={{ textDecoration: "none" }} key={item.id}>
                                     <button
                                         style={{
                                             backgroundColor: "rgba(255, 7, 66, 1)",
@@ -59,7 +98,19 @@ function Admin() {
                                             color: "white",
                                             borderRadius: "5px",
                                             marginRight: "10px"
-                                        }}>Cancel</button>
+                                        }}
+                                        onClick={handleActionCancel}
+                                        >Cancel</button>
+                                    <button
+                                        style={{
+                                            backgroundColor: "blue",
+                                            border: "none",
+                                            color: "white",
+                                            borderRadius: "5px",
+                                            marginLeft: "10px"
+                                        }}
+                                        onClick={handleActionOTW}
+                                        >On The Way</button>
                                     <button
                                         style={{
                                             backgroundColor: "rgba(10, 207, 131, 1)",
@@ -67,81 +118,12 @@ function Admin() {
                                             color: "white",
                                             borderRadius: "5px",
                                             marginLeft: "10px"
-                                        }}>Approve</button>
+                                        }}
+                                        onClick={handleActionSuccess}
+                                        >Approve</button>
+                                    </Link>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Hari Gams</td>
-                                <td>Serang</td>
-                                <td>42111</td>
-                                <td>
-                                    <p
-                                        style={{
-                                            textDecoration: "none"
-                                        }}>30.000</p>
-                                </td>
-                                <td
-                                    style={{
-                                        color: "rgba(120, 168, 90, 1)"
-                                    }}>Succes</td>
-                                <td>
-                                    <img
-                                        src={vector5}
-                                        style={{
-                                            backgroundColor: "rgba(59, 181, 74, 1)",
-                                            padding: "5px",
-                                            borderRadius: "100%"
-                                        }}/></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Aziz Union</td>
-                                <td>Bekasi</td>
-                                <td>13450</td>
-                                <td>
-                                    <p
-                                        style={{
-                                            textDecoration: "none"
-                                        }}>28.000</p>
-                                </td>
-                                <td
-                                    style={{
-                                        color: "rgba(232, 57, 57, 1)"
-                                    }}>Cancel</td>
-                                <td>
-                                    <img
-                                        src={vector4}
-                                        style={{
-                                            backgroundColor: "rgba(226, 76, 75, 1)",
-                                            padding: "5px",
-                                            borderRadius: "100%"
-                                        }}/></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Lae Tanjung Balai</td>
-                                <td>Tanjung Balai</td>
-                                <td>21331</td>
-                                <td>
-                                    <p
-                                        style={{
-                                            textDecoration: "none"
-                                        }}>30.000</p>
-                                </td>
-                                <td
-                                    style={{
-                                        color: "rgba(0, 209, 255, 1)"
-                                    }}>On The Way</td>
-                                <td>
-                                    <img
-                                        src={vector5}
-                                        style={{
-                                            backgroundColor: "rgba(59, 181, 74, 1)",
-                                            padding: "5px",
-                                            borderRadius: "100%"
-                                        }}/></td>
-                            </tr>
+                            </tr>))}
                         </tbody>
                     </table>
                 </div>

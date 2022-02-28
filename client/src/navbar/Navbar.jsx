@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import iconProfile from '../assets/iconProfile.png'
+import Admin from '../assets/support-services.png'
 import iconLogout from '../assets/iconLogout.png'
 import styleModuleLogin from '../pages/Page1.module.css'
 import Header from '../assets/Header.png'
 import Cart from '../assets/Vector.png'
-import Profile from '../assets//Rectangle 12.png'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { UserContext } from '../context/userContext'
@@ -22,23 +22,25 @@ function Navbar(props) {
     let {id} = useParams()
     const navigate = useNavigate()
     const [transaction, setTransaction] = useState()
+    const [transactionId, setTransactionId] = useState()
     const [state, dispatch] = useContext(UserContext);
     const path = 'http://localhost:5000/uploads/'
 
     const Home = ()=>{
-        navigate("/PageLogin")
+        navigate("/page-user")
     }
 
-    const CartPage = () => {
-        navigate("/cart")
+    const CartPage = (id) => {
+        if(transaction > 0){
+        navigate("/cart/" + transactionId.id)
+        } else{
+            swal("No Order yet!", "You clicked the button!", "error");
+        }
     }
 
+    // console.log(state);
     const logout = () => {
-    console.log(state);
-    dispatch({
-      type: "LOGOUT",
-    });
-    navigate("/");
+    // console.log(state);
     swal({
         title: "Are you sure?",
         text: "You Can Login Again For Finished Your Transaction!",
@@ -48,6 +50,10 @@ function Navbar(props) {
       })
       .then((willDelete) => {
         if (willDelete) {
+            dispatch({
+                type: "LOGOUT",
+              });
+            navigate("/");
           swal("Poof! Your Account has been Logout!", {
             icon: "success",
           });
@@ -58,7 +64,6 @@ function Navbar(props) {
     };
 
 
-    console.log(transaction);
     useEffect(() => {
         if (localStorage.token) {
         setAuthToken(localStorage.token);
@@ -93,6 +98,8 @@ function Navbar(props) {
         try {
             const response = await API.get('/my-transactions')
             setTransaction(response.data.data.length)
+            setTransactionId(response.data.data[0])
+            // console.log(response.data.data[0]);
         } catch (error) {
             console.log(error);
         }
@@ -115,13 +122,21 @@ function Navbar(props) {
                     <img src={path + state.data.image} className={styleModuleLogin.imgRegister} alt="" />   
                     <NavDropdown style={{marginTop: "30px"}}>
                         <NavDropdown.Item>
-                            <Link to={`/profile/` + state.data.id} style={{textDecoration: "none", color: "black"}}>
+                            <Link to={`/profile-user/` + state.data.id} style={{textDecoration: "none", color: "black"}}>
                                 <div style={{display: "flex", alignItems: "center"}}>
                                     <img src={iconProfile} alt="" style={{height: "30px"}} />
                                     <p style={{marginLeft: "5px"}}>Profile</p>
                                 </div>
                             </Link>
                         </NavDropdown.Item>
+                        {/* <NavDropdown.Item>
+                            <Link to={'/complain'} style={{textDecoration: "none", color: "black"}}>
+                                <div style={{display: "flex", alignItems: "center"}}>
+                                    <img src={Admin} alt="" style={{height: "30px"}} />
+                                    <p style={{marginLeft: "5px"}}>CS</p>
+                                </div>
+                            </Link>
+                        </NavDropdown.Item> */}
                         <NavDropdown.Item onClick={logout}>
                         <div style={{display: "flex", alignItems: "center"}}>
                             <img src={iconLogout} alt="" style={{height: "30px"}} />

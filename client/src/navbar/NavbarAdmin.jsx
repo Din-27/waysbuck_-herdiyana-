@@ -1,10 +1,9 @@
 import React, { useContext } from 'react'
-import iconProfile from '../assets/iconProfile.png'
 import iconLogout from '../assets/iconLogout.png'
 import styleModuleLogin from '../pages/Page1.module.css'
 import Header from '../assets/Header.png'
 import add1 from '../assets/add (1).png'
-import Profile from '../assets//Rectangle 12.png'
+import Profile from '../assets/support-services.png'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { UserContext } from '../context/userContext'
@@ -23,18 +22,15 @@ function NavbarAdmin() {
 
 
     const Admin = () => {
-        navigate("/Admin")
+        navigate("/admin")
     }
 
     const Home = () => {
-        navigate("/PageAdmin")
+        navigate("/page-admin")
     }
     const logout = () => {
-        console.log(state);
-        dispatch({
-          type: "LOGOUT",
-        });
-        navigate("/");
+        // console.log(state);
+        
         swal({
             title: "Are you sure?",
             text: "You Can Login Again For Finished Your Product and Toping!",
@@ -44,6 +40,10 @@ function NavbarAdmin() {
           })
           .then((willDelete) => {
             if (willDelete) {
+                dispatch({
+                    type: "LOGOUT",
+                  });
+                  navigate("/");
               swal("Poof! Your Account has been Logout!", {
                 icon: "success",
               });
@@ -54,11 +54,11 @@ function NavbarAdmin() {
       };
     
     const add = () =>{
-        navigate("/addProduct")
+        navigate("/add-product")
     }
 
     const toping = () => {
-        navigate("/AddToping")
+        navigate("/add-toping")
     }
 
     return (

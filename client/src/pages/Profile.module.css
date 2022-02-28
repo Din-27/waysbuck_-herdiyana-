@@ -42,7 +42,7 @@
 }
 
 .leftTitle{
-    margin-top: -100px;
+    /* margin-top: -100px; */
     margin-left: 30px;
     color: rgba(189, 7, 7, 1);
 }
@@ -82,14 +82,12 @@
 
 .rightTitle{
     color: rgba(189, 7, 7, 1);
-    margin-left: 600px;
-    margin-top: -520px;
-    
+    margin-left: 70px;
 }
 
 .rightContent{
     margin-top: 15px;
-    margin-left: 500px;
+    margin-left: 700px;
     margin-right: 150px;
     padding-left: 25px;
     display: flex;
@@ -98,12 +96,8 @@
 }
 
 .transactionOrder1{
-    margin-top: -30px;
-}
-
-.transactionOrder2{
-    margin-top: -50px;
-    margin-bottom: -10px;
+    /* margin-top: -30px; */
+    margin-left: 50px;
 }
 
 .order1{
@@ -120,7 +114,7 @@
     color: rgba(189, 7, 7, 1);
     font-size: 15px;
     font-weight: bold;
-    margin-left: 35px;
+    margin-left: 25px;
 }
 
 .topingOrder{
@@ -128,7 +122,7 @@
     margin-right: -5px;
     font-size: 10px;
     margin-top: -10px;
-    margin-left: 35;
+    /* margin-left: 25px; */
 }
 
 .imageQr img{
@@ -138,4 +132,13 @@
 
 .logo{
     width: 80px;
+    margin-top: 20px;
+}
+
+.Right{
+    margin-left: 100px;
+}
+
+.Right img{
+    margin-left: 30px;
 }

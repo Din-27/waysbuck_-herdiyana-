@@ -24,9 +24,6 @@ function Page1 () {
     const navigate = useNavigate()
     const [edit, setEdit] = useState()
 
-    const Product = () =>{
-        navigate('/Product')
-    }
   
       const [state, dispatch] = useContext(UserContext);
       useEffect(() => {
@@ -38,9 +35,9 @@ function Page1 () {
           navigate("/");
         } else {
           if (state.data.role === "admin") {
-            navigate("/PageAdmin");
+            navigate("/page-admin");
           }else if(state.data.role === "customer"){
-            navigate("/PageLogin");
+            navigate("/page-user");
           }
         }
       }, [state]);
@@ -90,9 +87,7 @@ function Page1 () {
 
       let handleDelete = async (id)=>{
         try {
-          const res = await API.delete(`/product/${id}`)
-          setIdDelete(res.data.data.id)
-          console.log(setIdDelete);
+          // console.log(setIdDelete);
           swal({
             title: "Are you sure?",
             text: "Once deleted, you will not be able to recover this imaginary file!",
@@ -100,11 +95,14 @@ function Page1 () {
             buttons: true,
             dangerMode: true,
           })
-          .then((willDelete) => {
+          .then(async (willDelete) => {
             if (willDelete) {
+              const res = await API.delete(`/product/${id}`)
+              setIdDelete(res.data.data.id)
               swal("Poof! Your imaginary file has been deleted!", {
                 icon: "success",
               });
+              navigate('/page-admin')
             } else {
               swal("Your imaginary file is safe!");
             }
@@ -132,20 +130,18 @@ function Page1 () {
 
 
       const handleEdit = (id) => {
-        navigate("/UpdateProduct/" + id);
+        navigate("/update-Product/" + id);
       };
 
 
       const handleEditToping = (id) => {
-        navigate("/UpdateToping/" + id);
+        navigate("/update-toping/" + id);
       };
 
       const [deleteToping, setDeleteToping] = useState([])
 
       let handleDeleteToping = async (id)=>{
         try {
-          const res = await API.delete(`/toping/${id}`)
-          setDeleteToping(res.data.data.id)
           swal({
             title: "Are you sure?",
             text: "Once deleted, you will not be able to recover this imaginary file!",
@@ -153,11 +149,14 @@ function Page1 () {
             buttons: true,
             dangerMode: true,
           })
-          .then((willDelete) => {
+          .then(async (willDelete) => {
             if (willDelete) {
+              const res = await API.delete(`/toping/${id}`)
+              setDeleteToping(res.data.data.id)
               swal("Poof! Your imaginary file has been deleted!", {
                 icon: "success",
               });
+              navigate('/page-admin')
             } else {
               swal("Your imaginary file is safe!");
             }
@@ -174,9 +173,8 @@ function Page1 () {
                 <NavbarAdmin/>
                       <div className={styleModuleLogin.mainLanding}>
                         <div>
-                          <div className={styleModuleLogin.contentOrder}>
                           <h3 style={{color: "red", marginBottom: "0", marginTop: "20px"}}>Product List</h3>
-                            {products.map(products => 
+                          <div className={styleModuleLogin.contentOrder}>
                             <Table striped bordered hover>
                             <thead style={{textAlign: "center"}}>
                               <tr>
@@ -186,6 +184,7 @@ function Page1 () {
                                 <th>Action</th>
                               </tr>
                             </thead>
+                          {products.map(products => 
                             <tbody>
                               <tr>
                                   <td><img src={products.image} alt="" style={{width: "50px", height: "70px"}}/></td>
@@ -196,13 +195,11 @@ function Page1 () {
                                   <img src={Edit} alt="" onClick={()=>handleEdit(products.id)} style={{width: "20px", margin: "10px"}} />
                                 </td>
                               </tr>
-                            </tbody>
-                          </Table>)}
+                            </tbody>)}
+                          </Table>
                           </div>
-                          <div className={styleModuleLogin.contentOrder}>
                             <h3 style={{color: "red", marginBottom: "0", marginTop: "20px"}}>Toping List</h3>
-                          {
-                            topings.map(topings=>
+                          <div className={styleModuleLogin.contentOrder}>
                               <Table striped bordered hover>
                                   <thead style={{textAlign: "center"}}>
                                     <tr>
@@ -212,6 +209,8 @@ function Page1 () {
                                       <th>Edit</th>
                                     </tr>
                                   </thead>
+                          {
+                            topings.map(topings=>
                                   <tbody>
                                     <tr>
                                         <td><img src={topings.image} alt="" style={{width: "50px", height: "50px"}} /></td>
@@ -222,9 +221,8 @@ function Page1 () {
                                       <img src={Edit} alt="" onClick={()=>handleEditToping(topings.id)} style={{width: "20px", margin: "10px"}} />
                                       </td>
                                     </tr>
-                                  </tbody>
+                                  </tbody>)}
                                 </Table>
-                            )}
                           </div>
                         </div>
                       </div>

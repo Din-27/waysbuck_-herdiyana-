@@ -1,13 +1,12 @@
 import './Home.css'
 import styleModuleLogin from './Page1.module.css'
-import Rectangle3 from '../assets/Rectangle 3.png'
 import Header from '../assets/Header.png'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import LoginModal from './LoginModals'
 import Register from './Register'
 import { useEffect } from 'react'
 import { API } from '../config/api'
+import jumbotron from '../assets/Jumbotron.png'
 
 
 
@@ -51,17 +50,17 @@ function Home() {
             </nav>
                   <div className='mainLanding'>
                       <div className='banner'>
-                          <div className='banner'>
-                              <div className='content'>
-                                  <div className='descript'>
-                                  <p className='title'>WAYSBUCK</p>
-                                  <p>Things are changing, but we're still here for you</p>
-                                  <p>We have temporarily closed our in-store cafes, but select grocery and drive-thru locations remaining open. <span style={
-                                    {fontWeight: "bold"}}>Waysbucks</span> Drivers is also available</p>
-                                  <p>Let's Order...</p>
-                                  </div>
-                              </div>
-                              <img style={{height: "300px", marginTop: "50px", marginLeft: "-250px"}} src={Rectangle3} alt=""/>
+                      <div className={styleModuleLogin.banner}>
+                                    {/* <div className={styleModuleLogin.content}>
+                                        <div className={styleModuleLogin.descript}>
+                                        <p className={styleModuleLogin.title}>WAYSBUCK</p>
+                                        <p>Things are changing, but we're still here for you</p>
+                                        <p>We have temporarily closed our in-store cafes, but select grocery and drive-thru locations remaining open. <span style={
+                                            {fontWeight: "bold"}}>Waysbucks</span> Drivers is also available</p>
+                                        <p>Let's Order...</p>
+                                        </div>
+                                    </div> */}
+                              <img style={{marginLeft: "50px"}} src={jumbotron} alt=""/>
                           </div>
                       </div>
 

@@ -44,7 +44,7 @@ function AddProduct() {
       console.log(form);
       const response = await API.post("/product", formData, config);
       console.log(response);
-      history("/PageAdmin");
+      history("/page-admin");
   };
 
   const submit =()=>{
@@ -55,7 +55,7 @@ function AddProduct() {
     <div>
         <NavbarAdmin/>
         <div className="container-input-add">
-            <h2>Product</h2>
+            <h2 style={{marginLeft: "60px"}}>Product</h2>
             <form className="input-main" method="post" onSubmit={handleSubmit}>
                 <div className="left-input">
                     <input type="text" placeholder="Name Product" name="name"
@@ -71,7 +71,7 @@ function AddProduct() {
                         <button className='buttonAdd' type='submit' onClick={submit} >Add Product</button>
                 </div>
             <div className="right-product">
-            <img src={preview} alt="" />
+            <img src={preview} alt="" style={{width: "300px"}}/>
         </div>
     </form>
 </div>

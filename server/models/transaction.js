@@ -17,9 +17,27 @@ module.exports = (sequelize, DataTypes) => {
           name: "idOrder",
         },
       });
+      transaction.belongsTo(models.product, {
+        as: "product",
+        foreignKey: {
+          name: "idProduct",
+        },
+      });
+      transaction.belongsTo(models.toping, {
+        as: "toping",
+        foreignKey: {
+          name: "idToping",
+        },
+      });
     }
   }
   transaction.init({
+    name: DataTypes.STRING,
+    email: DataTypes.STRING,
+    phone: DataTypes.INTEGER,
+    postcode: DataTypes.INTEGER,
+    address: DataTypes.STRING,
+    image: DataTypes.STRING,
     status: DataTypes.STRING
   }, {
     sequelize,

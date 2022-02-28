@@ -47,7 +47,7 @@ export default function AddToping() {
       console.log(form);
       const response = await API.post("/toping", formData, config);
       console.log(response);
-      history("/PageAdmin");
+      history("/page-admin");
   };
 
   const submit =()=>{
@@ -58,7 +58,7 @@ export default function AddToping() {
     <div>
         <NavbarAdmin/>
     <div className="container-input-add">
-        <h2>Toping</h2>
+    <h2 style={{marginLeft: "60px"}}>Toping</h2>
         <div className="input-main">
             <form className="left-input" method="post" onSubmit={handleSubmit}>
                 <input type="text" placeholder="Name Toping"
@@ -76,8 +76,7 @@ export default function AddToping() {
                     <button className='buttonAdd' type='submit' onClick={submit}>Add Toping</button>
             </form>
             <div className="right-product">
-              {preview && (
-                <img src={preview} alt=""/>)}
+                <img src={preview} alt="" style={{width: "300px"}}/>
             </div>
         </div>
     </div>

@@ -1,15 +1,12 @@
 import styleModuleLogin from './Page1.module.css'
-import Rectangle3 from '../assets/Rectangle 3.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import ProductCard from '../card/ProductCard'
 import Navbar from '../navbar/Navbar'
 import { API, setAuthToken } from '../config/api'
 import { useContext } from 'react'
 import { UserContext } from '../context/userContext'
 import { useEffect } from 'react'
-import axios from 'axios'
-import ProductDetail from '../card/ProductDetail'
+import jumbotron from '../assets/Jumbotron.png'
 
 
 
@@ -36,9 +33,9 @@ function Page () {
       navigate("/");
     } else {
       if (state.data.role === "admin") {
-        navigate("/PageAdmin");
+        navigate("/page-admin");
       }else if (state.data.role === "customer"){
-        navigate("/PageLogin");
+        navigate("/page-user");
       }
     }
   }, [state]);
@@ -82,7 +79,6 @@ function Page () {
       };
   
       useEffect(() => {
-        // getTopings()
         getProducts();
       }, []);
 
@@ -95,7 +91,7 @@ function Page () {
                         <div className={styleModuleLogin.mainLanding}>
                             <div className={styleModuleLogin.banner}>
                                 <div className={styleModuleLogin.banner}>
-                                    <div className={styleModuleLogin.content}>
+                                    {/* <div className={styleModuleLogin.content}>
                                         <div className={styleModuleLogin.descript}>
                                         <p className={styleModuleLogin.title}>WAYSBUCK</p>
                                         <p>Things are changing, but we're still here for you</p>
@@ -103,15 +99,15 @@ function Page () {
                                             {fontWeight: "bold"}}>Waysbucks</span> Drivers is also available</p>
                                         <p>Let's Order...</p>
                                         </div>
-                                    </div>
-                                    <img style={{height: "300px", marginTop: "50px", marginLeft: "-250px"}} src={Rectangle3} alt=""/>
+                                    </div> */}
+                                    <img style={{marginLeft: "30px"}} src={jumbotron} alt=""/>
                                 </div>
                             </div>
                             <h4 style={{color: "red", marginLeft: "80px", marginBottom: "40px", marginTop:"20px", fontWeight: "bold"}}>Products</h4>
                           <div>
                               <div className={styleModuleLogin.contentOrder}>
                                 {products.map(products => 
-                              <Link to={`/Product/` + products.id} style={{ textDecoration: "none" }} key={products.id}>
+                              <Link to={`/product/${products.id}`} style={{ textDecoration: "none" }} key={products.id}>
                                     <div className={styleModuleLogin.order1}>
                                         <img src={products.image} alt={products.name}/>
                                         <div className='descriptOrder1'>

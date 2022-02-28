@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Vector4 from "../assets/Vector (4).png"
 import Navbar from '../navbar/Navbar';
 import { Row, Col, Form, FloatingLabel, Button } from 'react-bootstrap'
 import styleCart from './Transaction.module.css'
 import { API, setAuthToken } from '../config/api';
 import { UserContext } from '../context/userContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import swal from '@sweetalert/with-react';
 import iconDelete from '../assets/Vector (5).png'
 
@@ -19,8 +18,10 @@ import iconDelete from '../assets/Vector (5).png'
 
 function Cart() {
 
+    const {id} = useParams()
+    const [order, setOrder] = useState([])
     const [transaction, setTransaction] = useState([])
-    const [product, setProduct] = useState([])
+    const [add, setAdd] = useState([])
     const [toping, setToping] = useState([])
     const navigate = useNavigate()
     const path = 'http://localhost:5000/uploads/'
@@ -38,16 +39,17 @@ function Cart() {
       }, [state]);
     
     const getMyTransaction = async () =>{
-        try {
+          try {
             const response = await API.get('/my-transactions')
             setTransaction(response.data.data)
-            setToping(response.data.data[0].toping)
-            setProduct(response.data.data[0].product)
+            // console.log(response);
+            // setToping(response.data.data[0].toping)
+            // setProduct(response.data.data[0].product)
             // console.log(response.data.data[0]);
         } catch (error) {
             console.log(error);
         }
-    }
+      }
 
 
     let history = useNavigate()
@@ -59,54 +61,74 @@ function Cart() {
     postcode: "",
     address: "",
     image: "",
+    idOrder: id,
   }); 
 
-  const handleChange = (e) => {
+  const handleChangePay = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.type === "file" ? e.target.files : e.target.value,
     });
+
+    if (e.target.type === "file") {
+      let url = URL.createObjectURL(e.target.files[0]);
+      setPreview(url);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    //   e.preventDefault();
-
-    //   const config = {
-    //     headers: {
-    //       "Content-type": "multipart/form-data",
-    //     },
-    //   };
-    //   const formData = new FormData();
-    //   formData.set("name", form.name);
-    //   formData.set("email", form.email);
-    //   formData.set("phone", form.phone);
-    //   formData.set("postcode", form.postcode);
-    //   formData.set("address", form.address);
-    //   formData.set("image", form.image[0]);
-
-    //   console.log(form);
-      const response = await API.post("/cart");
-      console.log(response);
-      history("/PageAdmin");
-    };
-
-    const submit =()=>{
-        swal("Good job!", "You clicked the button!", "success");
+  const getOrder = async () => {
+    try {
+      const response = await API.get(`/order/${id}`);
+      setOrder(response.data.data.data);
+      // console.log(response);
+    } catch (error) {
+      console.log(error);
     }
+    setAdd(!add)
+  }
+
+
+  const handlePay = async (e) => {
+    try {
+      e.preventDefault();
+
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        }
+      };
+    const formData = new FormData();
+    formData.set("name", form.name);
+    formData.set("email", form.email);
+    formData.set("phone", form.phone);
+    formData.set("postcode", form.postcode);
+    formData.set("address", form.address);
+    formData.set("image", form.image[0]);
+
+    // console.log(form);
+    const response = await API.post(`/payout/${id}`, formData, config);
+    console.log(response);
+    history("/page-user");
+    swal("Good job!", "You clicked the button!", "success");
+    } catch (error) {
+      console.log(error);
+      swal("Please upload Struck!", "You clicked the button!", "warning");
+    }
+  };
 
 
     useEffect(()=>{
         getMyTransaction()
+        getOrder()
     }, [])
 
 
     const [idDelete, setIdDelete] = useState([])
 
+    // console.log(idDelete);
     let handleDelete = async (id)=>{
       try {
-        const res = await API.delete(`/order/${id}`)
-        setIdDelete(res.data.data.id)
-        // console.log(setIdDelete);
         swal({
           title: "Are you sure?",
           text: "Once deleted, you will not be able to recover this imaginary file!",
@@ -114,11 +136,14 @@ function Cart() {
           buttons: true,
           dangerMode: true,
         })
-        .then((willDelete) => {
+        .then(async(willDelete) => {
           if (willDelete) {
+            const res = await API.delete(`/order/${id}`)
+            setIdDelete(res.data.data.id)
             swal("Poof! Your imaginary file has been deleted!", {
               icon: "success",
             });
+            navigate('/page-user')
           } else {
             swal("Your imaginary file is safe!");
           }
@@ -128,8 +153,11 @@ function Cart() {
       }
     }
 
-    
-  
+    const Cancel =()=>{
+      navigate('/page-user')
+    }
+
+
 
 
   return (
@@ -141,28 +169,32 @@ function Cart() {
                     <p style={{marginBottom: "0"}}>Review Your Order</p>
                     <Col>
                     <hr style={{height: "5px", color: "red"}}/>
-                        {transaction.map(transaction =>
-                          <div className={styleCart.transactionOrder1}>
+                    {transaction && transaction.map((item, index) =>
+                          <div className={styleCart.transactionOrder1} key={index}>
                           <div className={styleCart.cartorder1}>
-                              <img src={path + product.image} alt=""/>
+                            <Link to={`/cart/` + item.id} style={{ textDecoration: "none" }} key={item.id}>
+                            <input type="checkbox" onClick={()=>getOrder(item.id)} style={{marginRight: "10px"}}/>
+                            </Link>
+                              <img src={path + item.product.image} alt=""/>
                               <div className={styleCart.description1}>
                                   <div className={styleCart.titleDescript}>
-                                      <p>{product.name}</p>
+                                      <p>{item.product.name}</p>
                                       <p style={{fontSize: "12px", marginTop: "-10px"}}>saturday, <span style={{fontSize: "12px", fontWeight: "normal"}}>5 March 2022</span></p>
                                   </div>
                                   <div className={styleCart.topingOrder}>
                                       <p style={{fontWize: "12px", fontWeight: "bold", color: "rgba(151, 74, 74, 1)", marginLeft: "35px"}}>Toping :</p>
-                                      <p style={{fontWize: "12px", color: "rgba(189, 7, 7, 1)"}}>{toping.name}</p>
+                                      <p style={{fontWize: "12px", color: "rgba(189, 7, 7, 1)"}}>{item.toping.name}</p>
                                   </div>
                               </div>
                           <Col>
-                              <p style={{marginLeft: "35px", color: "rgba(151, 74, 74, 1)", marginTop: "20px"}}>Rp.{product.price + toping.price}</p>
-                              <img src={iconDelete} alt="" style={{width: "20px", height: "20px", marginLeft: "80px"}} onClick={()=>handleDelete(transaction.id)} />
+                              <p style={{marginLeft: "35px", color: "rgba(151, 74, 74, 1)", marginTop: "20px"}}>Rp.{item.product.price + item.toping.price}</p>
+                              <img src={iconDelete} alt="" style={{width: "20px", height: "20px", marginLeft: "80px"}} onClick={()=>handleDelete(item.id)} />
                           </Col>
                           </div>
                       </div>)}
                     <hr style={{height: "5px", color: "red"}}/>
                     <Row className='container'>
+
                         <hr style={{height: "5px", color: "red"}}/>
                         <Col>
                             <p>SubTotal</p>
@@ -170,58 +202,59 @@ function Cart() {
                             <p>Total : </p>
                         </Col>
                         <Col>
-                            <p>Rp.{product.price + toping.price}</p>
+                            <p>Rp.0</p>
                             <p>{transaction.length}</p>
-                            <p style={{marginBottom: "-40px"}}>{product.price + toping.price * transaction.length}</p>
+                            <p style={{marginBottom: "-40px"}}>Rp.0</p>
                         </Col>
                         <hr style={{height: "5px", color: "red"}}/>
                     </Row>
                     </Col>
                     <Col className='container' style={{marginTop: "40px", marginLeft: "20px" }}>
-                    <form method="post" onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3" controlId="formGroupEmail">
-                            <input placeholder="Name" className={styleCart.form}
-                            name="name"
-                            onChange={handleChange}
-                             />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formGroupEmail">
-                            <input type="email" placeholder="Email" className={styleCart.form}
-                            name="email"
-                            onChange={handleChange}
-                             />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formGroupPhone">
-                            <input type="number" placeholder="Phone" className={styleCart.form}
-                            name="phone"
-                            onChange={handleChange}
-                             />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formGroupPostCode">
-                            <input type="number" placeholder="Post Code" className={styleCart.form}
-                            name="postcode"
-                            onChange={handleChange}
-                             />
-                        </Form.Group>
-                        <FloatingLabel controlId="floatingTextarea2">
-                        <textarea
-                        className={styleCart.form}
-                        placeholder="Address"
-                        style={{ height: '100px', resize: "none" }}
-                        name="address"
-                        onChange={handleChange}
-                        />
-                        </FloatingLabel>
-                        <Col>
-                            <img src={Vector4} alt=""  className='ms-5' /> 
-                        <input type="file" className={styleCart.customFileInput}
-                        name="image"
-                        onChange={handleChange}
-                         />
-                        <Button variant="danger" size='lg' className={styleCart.buttonPay} onClick={submit}>Pay</Button>
-                        </Col>
-                    </form>
-                    </Col>
+                      <form method="post" onSubmit={handlePay}>
+                        <div>
+                          <input className={styleCart.form}
+                          placeholder='Name'
+                          name="name"
+                          onChange={handleChangePay} />
+                        </div>
+                        <div>
+                          <input className={styleCart.form} 
+                          placeholder='Email' 
+                          name="email"
+                          onChange={handleChangePay}/>
+                        </div>
+                        <div>
+                          <input className={styleCart.form}
+                          placeholder='Phone' type="number" 
+                          name="phone"
+                          onChange={handleChangePay}/>
+                        </div>
+                        <div>
+                          <input className={styleCart.form}
+                          placeholder='Post Code' type="number" 
+                          name="postcode"
+                          onChange={handleChangePay}/>
+                        </div>
+                        <div>
+                          <input
+                          type="file" 
+                          name="image"
+                          onChange={handleChangePay}/>
+                        </div>
+                        <div>
+                          <textarea className={styleCart.form}
+                          placeholder='Address' style={{resize: "none"}} 
+                          name="address"
+                          onChange={handleChangePay}/>
+                        </div>
+                        <div>
+                          <button className={styleCart.btn}>Pay</button>
+                        </div>
+                        <div>
+                          <button className={styleCart.btn} onClick={Cancel}>Cancel</button>
+                        </div>
+                      </form>
+                      </Col>
             </Row>
         
     </div>)

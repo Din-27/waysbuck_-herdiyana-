@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) => {
           name: "idToping",
         },
       });
+      order.hasMany(models.transaction, {
+        as: "transaction",
+        foreignKey: {
+          name: "idOrder",
+        },
+      });
     }
   }
   order.init({
